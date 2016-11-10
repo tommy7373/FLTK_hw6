@@ -73,7 +73,7 @@ Robot_Part_Dialog *robot_part_dlg;
 // Callbacks
 void CB(Fl_Widget* w, void* p){} //Does nothing
 
-void CloseCB(Fl_Widget* w, void* p){
+void CloseCB(Fl_Widget* w, void* p){ //Exits app
   win->hide();
 }
 
@@ -94,7 +94,7 @@ void CreateRobotPartCB(Fl_Widget* w, void* p){
 
 void CancelRobotPartCB(Fl_Widget* w, void* p){
   robot_part_dlg->hide();
-}
+}Ro
 
 // Menu
 Fl_Menu_Item menuitems[]={
