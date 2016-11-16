@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <vector>
+#include <string>
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Menu_Bar.H>
@@ -63,6 +64,7 @@ class Robot_Part_Dialog {
     Fl_Return_Button *rp_create;
     Fl_Button *rp_cancel;
 };
+//Class functions
 
 // Widgets
 Fl_Window *win;
@@ -94,7 +96,7 @@ void CreateRobotPartCB(Fl_Widget* w, void* p){
 
 void CancelRobotPartCB(Fl_Widget* w, void* p){
   robot_part_dlg->hide();
-}Ro
+}
 
 // Menu
 Fl_Menu_Item menuitems[]={
@@ -130,14 +132,6 @@ int main(){
 
   menubar = new Fl_Menu_Bar(0,0,X,30); //Create menubar
   menubar->menu(menuitems);
-
-  /* Test box
-  box = new Fl_Box(20,50,X-40,Y-70,"Welcome");
-  box->box(FL_UP_BOX);
-  box->labelfont(FL_BOLD+FL_ITALIC);
-  box->labelsize(20);
-  box->labeltype(FL_SHADOW_LABEL);
-  */
 
   win->callback(CloseCB, win); //Closing callback
 
