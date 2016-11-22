@@ -25,15 +25,14 @@ void CreateRobotPartCB(Fl_Widget* w, void* p);
 void CancelRobotPartCB(Fl_Widget* w, void* p);
 void CreateRobotModelCB(Fl_Widget* w, void* p);
 void CancelRobotModelCB(Fl_Widget* w, void* p);
-class RobotPartDialog;
-class RobotModelDialog;
-
+class Robot_Part_Dialog;
+class Robot_Model_Dialog;
 
 // Classes
 class Robot_Part_Dialog {
   public:
     Robot_Part_Dialog() { // Create and populate the dialog (but don't show it!)
-      dialog = new Fl_Window(340, 270, "Robot Part");
+      dialog = new Fl_Window(340, 500, "Robot Part");
         rp_name = new Fl_Input(120, 10, 210, 25, "Name:");
         rp_name->align(FL_ALIGN_LEFT);
         rp_part_number = new Fl_Int_Input(120, 40, 210, 25, "Part Number:");
@@ -46,9 +45,12 @@ class Robot_Part_Dialog {
         rp_cost->align(FL_ALIGN_LEFT);
         rp_description = new Fl_Multiline_Input(120, 160, 210, 75, "Description:");
         rp_description->align(FL_ALIGN_LEFT);
-        rp_create = new Fl_Return_Button(145, 240, 120, 25, "Create");
+        rp_batt_cap = new Fl_Float_Input(120, 240, 210, 25, "Battery Capacity\n(battery only):");
+        rp_batt_cap->align(FL_ALIGN_LEFT);
+        rp_torso_comps = new Fl_Int_Input(120, 285, 210, 25, "Battery Compartments\n(torso only):");
+        rp_create = new Fl_Return_Button(145, 470, 120, 25, "Create");
         rp_create->callback((Fl_Callback *)CreateRobotPartCB, 0);
-        rp_cancel = new Fl_Button(270, 240, 60, 25, "Cancel");
+        rp_cancel = new Fl_Button(270, 470, 60, 25, "Cancel");
         rp_cancel->callback((Fl_Callback *)CancelRobotPartCB, 0);
       dialog->end();
       dialog->set_non_modal();
@@ -61,6 +63,8 @@ class Robot_Part_Dialog {
     double weight() {return stod(rp_weight->value());}
     double cost() {return stod(rp_cost->value());}
     string description() {return rp_description->value();}
+    double batt_cap() {return stod(rp_batt_cap->value());}
+    int torso_comps() {return stoi(rp_torso_comps->value());}
   private:
     Fl_Window *dialog;
     Fl_Input *rp_name;
@@ -69,13 +73,15 @@ class Robot_Part_Dialog {
     Fl_Input *rp_weight;
     Fl_Input *rp_cost;
     Fl_Input *rp_description;
+    Fl_Input *rp_batt_cap;
+    Fl_Input *rp_torso_comps;
     Fl_Return_Button *rp_create;
     Fl_Button *rp_cancel;
 };
 class Robot_Model_Dialog {
   public:
     Robot_Model_Dialog() { // Create and populate the dialog (but don't show it!)
-      dialog2 = new Fl_Window(340, 270, "Robot Model");
+      dialog = new Fl_Window(340, 500, "Robot Model");
         rm_name = new Fl_Input(120, 10, 210, 25, "Name:");
         rm_name->align(FL_ALIGN_LEFT);
         rm_part_number = new Fl_Int_Input(120, 40, 210, 25, "Part Number:");
@@ -88,15 +94,15 @@ class Robot_Model_Dialog {
         rm_cost->align(FL_ALIGN_LEFT);
         rm_description = new Fl_Multiline_Input(120, 160, 210, 75, "Description:");
         rm_description->align(FL_ALIGN_LEFT);
-        rm_create = new Fl_Return_Button(145, 240, 120, 25, "Create");
+        rm_create = new Fl_Return_Button(145, 470, 120, 25, "Create");
         rm_create->callback((Fl_Callback *)CreateRobotModelCB, 0);
-        rm_cancel = new Fl_Button(270, 240, 60, 25, "Cancel");
+        rm_cancel = new Fl_Button(270, 470, 60, 25, "Cancel");
         rm_cancel->callback((Fl_Callback *)CancelRobotModelCB, 0);
-      dialog2->end();
-      dialog2->set_non_modal();
+      dialog->end();
+      dialog->set_non_modal();
     }
-    void show() {dialog2->show();}
-    void hide() {dialog2->hide();}
+    void show() {dialog->show();}
+    void hide() {dialog->hide();}
     string name() {return rm_name->value();}
     int part_number() {return stoi(rm_part_number->value());}
     string type() {return rm_type->value();}
@@ -104,7 +110,7 @@ class Robot_Model_Dialog {
     double cost() {return stod(rm_cost->value());}
     string description() {return rm_description->value();}
   private:
-    Fl_Window *dialog2;
+    Fl_Window *dialog;
     Fl_Input *rm_name;
     Fl_Input *rm_part_number;
     Fl_Input *rm_type;
@@ -135,7 +141,6 @@ void MenuCreateRobotPartCB(Fl_Widget* w, void* p){
 void MenuCreateRobotModelCB(Fl_Widget* w, void* p){
   robot_model_dlg->show();
 }
-
 void CreateRobotPartCB(Fl_Widget* w, void* p){ 
   cout << "### Creating robot part" << endl;
   string name = robot_part_dlg->name();
@@ -144,13 +149,16 @@ void CreateRobotPartCB(Fl_Widget* w, void* p){
   double weight = robot_part_dlg->weight();
   double cost = robot_part_dlg->cost();
   string desc = robot_part_dlg->description();
+  double batt_cap = robot_part_dlg->batt_cap();
   if(robot_part_dlg->type() == "Torso"||"torso"){
     Torso torso;
     torso.SetInfo(name,partnum,weight,cost,desc);
+    
   }
   if(robot_part_dlg->type() == "Battery"||"battery"){
     Battery battery;
     battery.SetInfo(name,partnum,weight,cost,desc);
+    battery.setBatteryInfo(batt_cap);
   }
   if(robot_part_dlg->type() == "Arm"||"arm"){
     Arm arm;
@@ -175,7 +183,6 @@ void CreateRobotPartCB(Fl_Widget* w, void* p){
 void CreateRobotModelCB(Fl_Widget* w, void* p){
 
 }
-
 void CancelRobotPartCB(Fl_Widget* w, void* p){
   robot_part_dlg->hide();
 }
